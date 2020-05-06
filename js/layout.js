@@ -16,22 +16,6 @@ function getList() {
 	return document.getElementById("playList");
 }
 
-function getPreviousBtn() {
-	return document.getElementById("previousBtn");
-}
-
-function getNextBtn() {
-	return document.getElementById("nextBtn");
-}
-
-function getShuffleBtn() {
-	return document.getElementById("shuffleBtn");
-}
-
-function getUnshuffleBtn() {
-	return document.getElementById("unshuffleBtn");
-}
-
 function shuffle(array) {
 	for (let i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
@@ -86,22 +70,17 @@ function shuffleList() {
 }
 
 function unshuffleList() {
-	for(i=0;i<listElements.length;i++){
-		if(playOrder[playOrderIndex] == listElements[i]){
-			playOrderIndex = i;
-			break;
-		}
-	}
+	playOrderIndex = parseInt(playOrder[playOrderIndex].getAttribute("index"));
 	playOrder = [...listElements];
 }
 
-getNextBtn().addEventListener("mouseup", () => playNext());
+document.getElementById("nextBtn").addEventListener("mouseup", () => playNext());
 
-getPreviousBtn().addEventListener("mouseup", () => playPrevious());
+document.getElementById("previousBtn").addEventListener("mouseup", () => playPrevious());
 
-getShuffleBtn().addEventListener("mouseup", () => shuffleList());
+document.getElementById("shuffleBtn").addEventListener("mouseup", () => shuffleList());
 
-getUnshuffleBtn().addEventListener("mouseup", () => unshuffleList());
+document.getElementById("unshuffleBtn").addEventListener("mouseup", () => unshuffleList());
 
 function handleListItemClickEvent(element) {
 	play(element.getAttribute("index"));
@@ -115,7 +94,7 @@ function handleListItemClickEvent(element) {
 	}
 }
 
-document.getElementById(inputId).addEventListener("change", function (evt) {
+document.getElementById(inputId).addEventListener("change", (evt) => {
 	let tgt = evt.target || window.event.srcElement,
 		files = tgt.files;
 
@@ -157,7 +136,7 @@ document.getElementById(inputId).addEventListener("change", function (evt) {
 	list.innerHTML = listItems.innerHTML;
 
 	listElements = [...list.children];
-	playOrder=[...listElements];//default play order
+	playOrder = [...listElements];//default play order
 	playOrderIndex = firstPlayIndex;
 });
 
