@@ -81,18 +81,30 @@ function unshuffleList() {
 	isShuffled = false;
 }
 
-document.getElementById("nextBtn").addEventListener("mouseup", () => playNext());
+document.getElementById("nextBtn").addEventListener("mouseup", () => {
+	if(listElements.length){
+		playNext();
+	}
+});
 
-document.getElementById("previousBtn").addEventListener("mouseup", () => playPrevious());
+document.getElementById("previousBtn").addEventListener("mouseup", () => {
+	if(listElements.length){
+		playPrevious();
+	}
+});
 
 getShuffleBtn().addEventListener("mouseup", (event) => {
-	shuffleList();
-	event.target.innerHTML = "Reshuffle";
+	if(listElements.length){
+		shuffleList();
+		event.target.innerHTML = "Reshuffle";
+	}
 });
 
 document.getElementById("unshuffleBtn").addEventListener("mouseup", () => {
-	unshuffleList();
-	getShuffleBtn().innerHTML = "Shuffle";
+	if(listElements.length){
+		unshuffleList();
+		getShuffleBtn().innerHTML = "Shuffle";
+	}
 });
 
 function handleListItemClickEvent(element) {

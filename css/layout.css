@@ -62,6 +62,7 @@ body{
 
 .media-list-item:hover{
 	background-color: #2a2d2e;
+	color: #48a0f7;
 }
 
 .media-list-item:active{
@@ -73,6 +74,8 @@ body{
 
 .media-list-item.playing{
 	background-color: #37373d;
+	color: #48a0f7;
+	text-shadow: 0px 0px 1px #48a0f7;
 }
 
 .player-container .button{
@@ -87,6 +90,7 @@ body{
 
 .player-container .button:hover{
 	background-color: #474748;
+	color: #48a0f7;
 }
 
 .player-container .button:active{
@@ -94,4 +98,5 @@ body{
 	border-left-color: #9fa3a4;
 	border-right-color: #f0f0f0;
 	border-bottom-color: #f0f0f0;
+	text-shadow: 0px 0px 1px #48a0f7;
 }
