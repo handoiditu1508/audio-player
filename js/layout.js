@@ -2,7 +2,7 @@ let inputId = "audioInput";
 let listElements = [];
 let playOrder = [];
 let playOrderIndex = null;
-let isShuffled = false;
+let isShuffled = null;
 
 function getInputAudios() {
 	let input = document.getElementById(inputId);
@@ -144,6 +144,8 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 		alert("Not supported");
 		return;
 	}
+	
+	let isShuffled = false;
 
 	let list = getList();
 	//clear list
