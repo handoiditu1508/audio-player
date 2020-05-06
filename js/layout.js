@@ -2,6 +2,7 @@ let inputId = "audioInput";
 let listElements = [];
 let playOrder = [];
 let playOrderIndex = null;
+let isShuffled = false;
 
 function getInputAudios() {
 	let input = document.getElementById(inputId);
@@ -16,12 +17,12 @@ function getList() {
 	return document.getElementById("playList");
 }
 
-function shuffle(array) {
-	for (let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[array[i], array[j]] = [array[j], array[i]];
-	}
-	return array;
+function getShuffleBtn() {
+	return document.getElementById("shuffleBtn");
+}
+
+function setFileName(name) {
+	document.getElementById("fileName").innerHTML = name;
 }
 
 function play(index) {
@@ -46,6 +47,7 @@ function playNext() {
 	else playOrderIndex = 0;
 	play(playOrder[playOrderIndex].getAttribute("index"));
 	playOrder[playOrderIndex].classList.add("playing");
+	setFileName(playOrder[playOrderIndex].innerHTML);
 }
 
 function playPrevious() {
@@ -55,6 +57,7 @@ function playPrevious() {
 	else playOrderIndex = playOrder.length - 1;
 	play(playOrder[playOrderIndex].getAttribute("index"));
 	playOrder[playOrderIndex].classList.add("playing");
+	setFileName(playOrder[playOrderIndex].innerHTML);
 }
 
 function shuffleList() {
@@ -67,30 +70,47 @@ function shuffleList() {
 		else if (j == playOrderIndex)
 			playOrderIndex = i;
 	}
+	[playOrder[playOrderIndex], playOrder[0]] = [playOrder[0], playOrder[playOrderIndex]];//swap playOrderIndex 0
+	playOrderIndex = 0;
+	isShuffled = true;
 }
 
 function unshuffleList() {
 	playOrderIndex = parseInt(playOrder[playOrderIndex].getAttribute("index"));
 	playOrder = [...listElements];
+	isShuffled = false;
 }
 
 document.getElementById("nextBtn").addEventListener("mouseup", () => playNext());
 
 document.getElementById("previousBtn").addEventListener("mouseup", () => playPrevious());
 
-document.getElementById("shuffleBtn").addEventListener("mouseup", () => shuffleList());
+getShuffleBtn().addEventListener("mouseup", (event) => {
+	shuffleList();
+	event.target.innerHTML = "Reshuffle";
+});
 
-document.getElementById("unshuffleBtn").addEventListener("mouseup", () => unshuffleList());
+document.getElementById("unshuffleBtn").addEventListener("mouseup", () => {
+	unshuffleList();
+	getShuffleBtn().innerHTML = "Shuffle";
+});
 
 function handleListItemClickEvent(element) {
-	play(element.getAttribute("index"));
+	let index = parseInt(element.getAttribute("index"));
+	play(index);
 	playOrder[playOrderIndex].classList.remove("playing");
 	element.classList.add("playing");
-	for (i = 0; i < playOrder.length; i++) {
-		if (playOrder[i] == element) {
-			playOrderIndex = i;
-			break;
-		}
+	setFileName(playOrder[index].innerHTML);
+
+	if (isShuffled) {
+		let elementOrderIndex = playOrder.indexOf(element);
+		if (elementOrderIndex < playOrderIndex)//swap elementOrderIndex playOrderIndex
+			[playOrder[elementOrderIndex], playOrder[playOrderIndex]] = [playOrder[playOrderIndex], playOrder[elementOrderIndex]];
+		//swap elementOrderIndex playOrderIndex+1
+		else[playOrder[elementOrderIndex], playOrder[++playOrderIndex]] = [playOrder[playOrderIndex], playOrder[elementOrderIndex]];
+	}
+	else {
+		playOrderIndex = index;
 	}
 }
 
@@ -122,13 +142,15 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 	for (i = 0; i < files.length; i++) {
 		let listItem = document.createElement("LI");
 		listItem.classList.add("media-list-item");
-		if (i == firstPlayIndex)
-			listItem.classList.add("playing");
 		listItem.setAttribute("index", i);
 
 		let name = files[i].name;
 		name = name.substring(0, name.lastIndexOf("."));
 		listItem.innerHTML = name;
+		if (i == firstPlayIndex) {
+			listItem.classList.add("playing");
+			setFileName(name);
+		}
 		listItem.setAttribute("onmouseup", "handleListItemClickEvent(this)");
 
 		listItems.appendChild(listItem);
@@ -145,5 +167,6 @@ getPlayer().addEventListener("ended", function (event) {
 		playOrder[playOrderIndex].classList.remove("playing");
 		play(playOrder[++playOrderIndex].getAttribute("index"));
 		playOrder[playOrderIndex].classList.add("playing");
+		setFileName(playOrder[playOrderIndex].innerHTML);
 	}
 });

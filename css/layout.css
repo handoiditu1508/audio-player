@@ -3,19 +3,26 @@ body{
 	color: #ffffff;
 }
 
+.spacing{
+	margin-top: 150px;
+}
+
+#fileName{
+	color: #48a0f7;
+}
+
 .flex-container{
 	display: flex;
 	justify-content: center;
-	align-items: center;
 	flex-direction: row;
 }
 .flex-container.column{
 	flex-direction: column;
+	align-items: center;
 }
 
 .player-container{
 	width: 50%;
-	margin-top: 150px;
 }
 
 .player-container > .player{
