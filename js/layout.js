@@ -1,7 +1,5 @@
 let inputId = "audioInput";
-let playerId = "player";
-let listId = "playList";
-let playingElement = null;
+let listElements = [];
 let playOrder = [];
 let playOrderIndex = null;
 
@@ -11,11 +9,35 @@ function getInputAudios() {
 }
 
 function getPlayer() {
-	return document.getElementById(playerId);
+	return document.getElementById("player");
 }
 
 function getList() {
-	return document.getElementById(listId);
+	return document.getElementById("playList");
+}
+
+function getPreviousBtn() {
+	return document.getElementById("previousBtn");
+}
+
+function getNextBtn() {
+	return document.getElementById("nextBtn");
+}
+
+function getShuffleBtn() {
+	return document.getElementById("shuffleBtn");
+}
+
+function getUnshuffleBtn() {
+	return document.getElementById("unshuffleBtn");
+}
+
+function shuffle(array) {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	return array;
 }
 
 function play(index) {
@@ -33,14 +55,64 @@ function play(index) {
 	}
 }
 
-function handleListItemClickEvent(element){
-	let index = element.getAttribute("index");
-	play(index);
+function playNext() {
+	playOrder[playOrderIndex].classList.remove("playing");
+	if (playOrder.length > playOrderIndex + 1)
+		playOrderIndex++;
+	else playOrderIndex = 0;
+	play(playOrder[playOrderIndex].getAttribute("index"));
+	playOrder[playOrderIndex].classList.add("playing");
+}
+
+function playPrevious() {
+	playOrder[playOrderIndex].classList.remove("playing");
+	if (-1 < playOrderIndex - 1)
+		playOrderIndex--;
+	else playOrderIndex = playOrder.length - 1;
+	play(playOrder[playOrderIndex].getAttribute("index"));
+	playOrder[playOrderIndex].classList.add("playing");
+}
+
+function shuffleList() {
+	for (let i = playOrder.length - 1; i > 0; i--) {
+		let j = Math.floor(Math.random() * (i + 1));
+		[playOrder[i], playOrder[j]] = [playOrder[j], playOrder[i]];//swap i j
+
+		if (i == playOrderIndex)
+			playOrderIndex = j;
+		else if (j == playOrderIndex)
+			playOrderIndex = i;
+	}
+}
+
+function unshuffleList() {
+	for(i=0;i<listElements.length;i++){
+		if(playOrder[playOrderIndex] == listElements[i]){
+			playOrderIndex = i;
+			break;
+		}
+	}
+	playOrder = [...listElements];
+}
+
+getNextBtn().addEventListener("mouseup", () => playNext());
+
+getPreviousBtn().addEventListener("mouseup", () => playPrevious());
+
+getShuffleBtn().addEventListener("mouseup", () => shuffleList());
+
+getUnshuffleBtn().addEventListener("mouseup", () => unshuffleList());
+
+function handleListItemClickEvent(element) {
+	play(element.getAttribute("index"));
+	playOrder[playOrderIndex].classList.remove("playing");
 	element.classList.add("playing");
-	if(playingElement)
-		playingElement.classList.remove("playing");
-	playingElement = element;
-	playOrderIndex = playOrder.indexOf(parseInt(index));
+	for (i = 0; i < playOrder.length; i++) {
+		if (playOrder[i] == element) {
+			playOrderIndex = i;
+			break;
+		}
+	}
 }
 
 document.getElementById(inputId).addEventListener("change", function (evt) {
@@ -55,9 +127,6 @@ document.getElementById(inputId).addEventListener("change", function (evt) {
 			getPlayer().src = fr.result;
 		}
 		fr.readAsDataURL(files[firstPlayIndex]);
-
-		playOrder = Array.from(Array(files.length).keys());//[0,1,2,3,n]
-		playOrderIndex = playOrder.indexOf(firstPlayIndex);
 	}
 	// Not supported
 	else {
@@ -74,6 +143,8 @@ document.getElementById(inputId).addEventListener("change", function (evt) {
 	for (i = 0; i < files.length; i++) {
 		let listItem = document.createElement("LI");
 		listItem.classList.add("media-list-item");
+		if (i == firstPlayIndex)
+			listItem.classList.add("playing");
 		listItem.setAttribute("index", i);
 
 		let name = files[i].name;
@@ -84,11 +155,16 @@ document.getElementById(inputId).addEventListener("change", function (evt) {
 		listItems.appendChild(listItem);
 	}
 	list.innerHTML = listItems.innerHTML;
+
+	listElements = [...list.children];
+	playOrder=[...listElements];//default play order
+	playOrderIndex = firstPlayIndex;
 });
 
-getPlayer().addEventListener("ended", function(event){
-	if(playOrder.length > playOrderIndex + 1){
-		play(playOrder[++playOrderIndex]);
-		//let element = document.getE
+getPlayer().addEventListener("ended", function (event) {
+	if (playOrder.length > playOrderIndex + 1) {
+		playOrder[playOrderIndex].classList.remove("playing");
+		play(playOrder[++playOrderIndex].getAttribute("index"));
+		playOrder[playOrderIndex].classList.add("playing");
 	}
 });
