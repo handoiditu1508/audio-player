@@ -112,7 +112,7 @@ function handleListItemClickEvent(element) {
 	play(index);
 	playOrder[playOrderIndex].classList.remove("playing");
 	element.classList.add("playing");
-	setFileName(playOrder[index].innerHTML);
+	setFileName(listElements[index].innerHTML);
 
 	if (isShuffled) {
 		let elementOrderIndex = playOrder.indexOf(element);
