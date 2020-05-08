@@ -23,6 +23,7 @@ function getShuffleBtn() {
 
 function setFileName(name) {
 	document.getElementById("fileName").innerHTML = name;
+	window.document.title = name;
 }
 
 function play(index) {
