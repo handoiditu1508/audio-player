@@ -1,5 +1,4 @@
 let inputId = "audioInput";
-let listItemsId = "media-list-item";
 let listElements = [];
 let playOrder = [];
 let playOrderIndex = null;
@@ -178,7 +177,7 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 
 	for (i = 0; i < files.length; i++) {
 		let listItem = document.createElement("LI");
-		listItem.classList.add(listItemsId);
+		listItem.classList.add("media-list-item");
 		listItem.setAttribute("index", i);
 
 		let name = files[i].name;
