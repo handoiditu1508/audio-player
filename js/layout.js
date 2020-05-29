@@ -1,4 +1,5 @@
 let inputId = "audioInput";
+let listItemsId = "media-list-item";
 let listElements = [];
 let playOrder = [];
 let playOrderIndex = null;
@@ -17,8 +18,20 @@ function getList() {
 	return document.getElementById("playList");
 }
 
+function getPreviousBtn() {
+	return document.getElementById("previousBtn");
+}
+
+function getNextBtn() {
+	return document.getElementById("nextBtn");
+}
+
 function getShuffleBtn() {
 	return document.getElementById("shuffleBtn");
+}
+
+function getUnshuffleBtn() {
+	return document.getElementById("unshuffleBtn");
 }
 
 function setFileName(name) {
@@ -36,6 +49,7 @@ function play(index) {
 		fr.onload = function () {
 			player.src = fr.result;
 			player.play();
+			enableBtns();
 		}
 		fr.readAsDataURL(files[index]);
 	}
@@ -82,33 +96,41 @@ function unshuffleList() {
 	isShuffled = false;
 }
 
-document.getElementById("nextBtn").addEventListener("mouseup", () => {
+getNextBtn().addEventListener("mouseup", () => {
+	disableBtns();
 	if(listElements.length){
 		playNext();
 	}
 });
 
-document.getElementById("previousBtn").addEventListener("mouseup", () => {
+getPreviousBtn().addEventListener("mouseup", () => {
+	disableBtns();
 	if(listElements.length){
 		playPrevious();
 	}
 });
 
 getShuffleBtn().addEventListener("mouseup", (event) => {
+	disableBtns();
 	if(listElements.length){
 		shuffleList();
 		event.target.innerHTML = "Reshuffle";
 	}
+	enableBtns();
 });
 
-document.getElementById("unshuffleBtn").addEventListener("mouseup", () => {
+getUnshuffleBtn().addEventListener("mouseup", () => {
+	disableBtns();
 	if(listElements.length){
 		unshuffleList();
 		getShuffleBtn().innerHTML = "Shuffle";
 	}
+	enableBtns();
 });
 
 function handleListItemClickEvent(element) {
+	disableBtns();
+
 	let index = parseInt(element.getAttribute("index"));
 	play(index);
 	playOrder[playOrderIndex].classList.remove("playing");
@@ -156,7 +178,7 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 
 	for (i = 0; i < files.length; i++) {
 		let listItem = document.createElement("LI");
-		listItem.classList.add("media-list-item");
+		listItem.classList.add(listItemsId);
 		listItem.setAttribute("index", i);
 
 		let name = files[i].name;
@@ -185,3 +207,25 @@ getPlayer().addEventListener("ended", function (event) {
 		setFileName(playOrder[playOrderIndex].innerHTML);
 	}
 });
+
+function disableBtns(){
+	getNextBtn().disabled = true;
+	getPreviousBtn().disabled = true;
+	getShuffleBtn().disabled = true;
+	getUnshuffleBtn().disabled = true;
+
+	for(let i=0;i<listElements.length;i++){
+		listElements[i].setAttribute("onmouseup", null);
+	}
+}
+
+function enableBtns(){
+	getNextBtn().disabled = false;
+	getPreviousBtn().disabled = false;
+	getShuffleBtn().disabled = false;
+	getUnshuffleBtn().disabled = false;
+
+	for(let i=0;i<listElements.length;i++){
+		listElements[i].setAttribute("onmouseup", "handleListItemClickEvent(this)");
+	}
+}
