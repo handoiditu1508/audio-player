@@ -149,6 +149,8 @@ function handleListItemClickEvent(element) {
 }
 
 document.getElementById(inputId).addEventListener("change", (evt) => {
+	disableBtns();
+
 	let tgt = evt.target || window.event.srcElement,
 		files = tgt.files;
 
@@ -158,6 +160,7 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 		let fr = new FileReader();
 		fr.onload = function () {
 			getPlayer().src = fr.result;
+			enableBtns();
 		}
 		fr.readAsDataURL(files[firstPlayIndex]);
 	}
@@ -200,6 +203,7 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 
 getPlayer().addEventListener("ended", function (event) {
 	if (playOrder.length > playOrderIndex + 1) {
+		disableBtns();
 		playOrder[playOrderIndex].classList.remove("playing");
 		play(playOrder[++playOrderIndex].getAttribute("index"));
 		playOrder[playOrderIndex].classList.add("playing");
