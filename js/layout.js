@@ -236,7 +236,7 @@ getPlayer().addEventListener("ended", function (event) {
 			play(playOrder[++playOrderIndex].getAttribute("index"));
 			playOrder[playOrderIndex].classList.add("playing");
 			setFileName(playOrder[playOrderIndex].innerHTML);
-		}, getTimeBetweenSongs());
+		}, getTimeBetweenSongs() * 1000);
 	}
 });
 
