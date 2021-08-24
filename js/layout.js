@@ -2,7 +2,7 @@ let inputId = "audioInput";
 let listElements = [];
 let playOrder = [];
 let playOrderIndex = null;
-let isShuffled = null;
+let isShuffled = false;
 
 function getInputAudios() {
 	let input = document.getElementById(inputId);
@@ -31,6 +31,10 @@ function getShuffleBtn() {
 
 function getUnshuffleBtn() {
 	return document.getElementById("unshuffleBtn");
+}
+
+function getAutoPlayCheckBox() {
+	return document.getElementById("autoPlay");
 }
 
 function setFileName(name) {
@@ -171,6 +175,7 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 	}
 	
 	let isShuffled = false;
+	getShuffleBtn().innerHTML = "Shuffle";
 
 	let list = getList();
 	//clear list
@@ -202,7 +207,7 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 });
 
 getPlayer().addEventListener("ended", function (event) {
-	if (playOrder.length > playOrderIndex + 1) {
+	if (getAutoPlayCheckBox().checked && playOrder.length > playOrderIndex + 1) {
 		disableBtns();
 		playOrder[playOrderIndex].classList.remove("playing");
 		play(playOrder[++playOrderIndex].getAttribute("index"));
