@@ -6,8 +6,7 @@ let isShuffled = false;
 let autoPlayTimeoutId = null;
 
 function getInputAudios() {
-	let input = document.getElementById(inputId);
-	return input.files;
+	return document.getElementById(inputId).files;
 }
 
 function getPlayer() {
