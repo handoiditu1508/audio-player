@@ -56,8 +56,6 @@ function setFileName(name) {
 }
 
 function play(index) {
-	stopAutoPlayTimeout();
-
 	let files = getInputAudios();
 
 	// FileReader support
@@ -112,6 +110,10 @@ function unshuffleList() {
 	playOrder = [...listElements];
 	isShuffled = false;
 }
+
+getPlayer().addEventListener("play", () => {
+	stopAutoPlayTimeout();
+});
 
 getNextBtn().addEventListener("mouseup", () => {
 	disableBtns();
