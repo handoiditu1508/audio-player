@@ -37,6 +37,10 @@ function isAutoPlay() {
 	return document.getElementById("autoPlay").checked;
 }
 
+function isRepeat() {
+	return document.getElementById("repeat").checked;
+}
+
 function getTimeBetweenSongs() {
 	let seconds = parseFloat(document.getElementById("timeBetweenSongs").value);
 	if (isNaN(seconds)) seconds = 0;
@@ -230,11 +234,17 @@ document.getElementById(inputId).addEventListener("change", (evt) => {
 });
 
 getPlayer().addEventListener("ended", function (event) {
-	if (isAutoPlay() && playOrder.length > playOrderIndex + 1) {
+	if (isAutoPlay()) {
+		let oldIndex = playOrderIndex;
+		if(isRepeat())
+			playOrderIndex = (playOrderIndex + 1) % playOrder.length;
+		else if(playOrder.length > playOrderIndex + 1)
+			playOrderIndex++;
+		else return;
 		autoPlayTimeoutId = setTimeout(function () {
 			disableBtns();
-			playOrder[playOrderIndex].classList.remove("playing");
-			play(playOrder[++playOrderIndex].getAttribute("index"));
+			playOrder[oldIndex].classList.remove("playing");
+			play(playOrder[playOrderIndex].getAttribute("index"));
 			playOrder[playOrderIndex].classList.add("playing");
 			setFileName(playOrder[playOrderIndex].innerHTML);
 		}, getTimeBetweenSongs() * 1000);
